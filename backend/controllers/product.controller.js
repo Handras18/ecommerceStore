@@ -64,7 +64,7 @@ export const deleteProduct = async (req, res) => {
       return res.status(404).json({ message: "Product not found" });
     }
     if (product.image) {
-      const publicId = product.image.split("/").split(".")[0];
+      const publicId = product.image.split("/").pop().split(".")[0];
       try {
         await cloudinary.uploader.destroy(`products/${publicId}`);
         console.log("deleted iamge from cloudinary");
@@ -91,7 +91,7 @@ export const getRecommendedProducts = async (req, res) => {
           _id: 1,
           name: 1,
           description: 1,
-          iamge: 1,
+          image: 1,
           price: 1,
         },
       },
@@ -122,7 +122,7 @@ export const toggleFeatuedProduct = async (req, res) => {
       const updatedProduct = await product.save();
       await updateFeaturedProductsCache();
 
-      res.json(updateProduct);
+      res.json(updatedProduct);
     } else {
       res.status(400).json({ message: "Product not found" });
     }

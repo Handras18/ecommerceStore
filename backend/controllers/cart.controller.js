@@ -30,7 +30,7 @@ export const removeAllFromCart = async (req, res) => {
       user.cartItems = user.cartItems.filter((item) => item.id !== productId);
     }
     await user.save();
-    res.json(user, cartItems);
+    res.json(user.cartItems);
   } catch (error) {
     console.log("Error in removeAllFromCart controller", error.message);
     res.status(500).json({ message: "Server error", error: error.message });
@@ -65,7 +65,7 @@ export const getCartProduct = async (req, res) => {
     const products = await Product.find({ _id: { $in: req.user.cartItems } });
     const cartItems = products.map((product) => {
       const item = req.user.cartItems.find(
-        (cartItem) => cartItem.id === productId
+        (cartItem) => cartItem.id === product.id
       );
       return { ...product.toJSON(), quantity: item.quantity };
     });
