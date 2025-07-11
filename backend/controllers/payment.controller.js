@@ -97,7 +97,8 @@ export const checkoutSuccess = async (req, res) => {
       const newOrder = new Order({
         user: session.metadata.userId,
         products: products.map((product) => ({
-          product: product.quantity,
+          product: product._id,
+          quantity: product.quantity,
           price: product.price,
         })),
         totalAmount: session.amount_total / 100,
