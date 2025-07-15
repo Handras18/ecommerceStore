@@ -8,7 +8,7 @@ export const protectRoute = async (req, res, next) => {
     if (!accessToken) {
       return res
         .status(401)
-        .json({ message: "Unauthorized - No token provided" });
+        .json({ message: "Unauthorized - No access token provided" });
     }
     try {
       const decoded = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
@@ -23,7 +23,7 @@ export const protectRoute = async (req, res, next) => {
       if (error.name === "TokenExpiredError") {
         return res
           .status(401)
-          .json({ message: "Unauthorized - No token provided" });
+          .json({ message: "Unauthorized - Access token expired" });
       }
       throw error;
     }
