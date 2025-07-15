@@ -2,7 +2,7 @@ import { create } from "zustand";
 import axios from "../lib/axios.js";
 import { toast } from "react-hot-toast";
 
-export const useUserStore = create((set, get) => ({
+export const useUserStore = create((set) => ({
   user: null,
   loading: false,
   checkingAuth: true,
@@ -25,7 +25,7 @@ export const useUserStore = create((set, get) => ({
       toast.error(error.response.data.message || "An error occurred (signup)");
     }
   },
-  login: async ({ email, password }) => {
+  login: async (email, password) => {
     set({ loading: true });
     try {
       const res = await axios.post("/auth/login", { email, password });
@@ -51,20 +51,6 @@ export const useUserStore = create((set, get) => ({
       set({ user: null });
     } catch (error) {
       toast.error(error.response.data.message || "An error occurred (logout)");
-    }
-  },
-  refreshToken: async () => {
-    // Prevent multiple simultaneous refresh attempts
-    if (get().checkingAuth) return;
-
-    set({ checkingAuth: true });
-    try {
-      const response = await axios.post("/auth/refresh-token");
-      set({ checkingAuth: false });
-      return response.data;
-    } catch (error) {
-      set({ user: null, checkingAuth: false });
-      throw error;
     }
   },
 }));
