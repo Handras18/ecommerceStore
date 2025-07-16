@@ -9,7 +9,7 @@ import { useEffect } from "react";
 import LoadingSpinner from "./components/LoadingSpinner";
 
 const App = () => {
-  const { checkAuth, checkingAuth } = useUserStore();
+  const { user, checkAuth, checkingAuth } = useUserStore();
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
@@ -26,8 +26,14 @@ const App = () => {
         <Navbar />
         <Routes>
           <Route path="/" element={<HomePage />}></Route>
-          <Route path="/signup" element={<SignUpPage />}></Route>
-          <Route path="/login" element={<LoginPage />}></Route>
+          <Route
+            path="/signup"
+            element={!user ? <SignUpPage /> : <Navigate to="/" />}
+          ></Route>
+          <Route
+            path="/login"
+            element={!user ? <LoginPage /> : <Navigate to="/" />}
+          ></Route>
         </Routes>
       </div>
       <Toaster />
