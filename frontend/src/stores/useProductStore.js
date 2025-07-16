@@ -39,6 +39,7 @@ export const useProductStore = create((set) => ({
           (product) => product._id !== productId
         ),
       }));
+      toast.success("Delete successfully");
     } catch (error) {
       set({ error: "Failed to delete products", loading: false });
       toast.error(error.response.data.error || "Failed to delete product");
@@ -58,6 +59,18 @@ export const useProductStore = create((set) => ({
       }));
     } catch (error) {
       set({ error: "Failed to toggle featured products", loading: false });
+      toast.error(
+        error.response.data.error || "Failed to toggle featured product"
+      );
+    }
+  },
+  fetchProductByCategory: async (category) => {
+    set({ loading: true });
+    try {
+      const res = await axios.get(`/products/category/${category}`);
+      set({ products: res.data.products, loading: false });
+    } catch (error) {
+      set({ error: "Failed to fetch to products", loading: false });
       toast.error(
         error.response.data.error || "Failed to toggle featured product"
       );
