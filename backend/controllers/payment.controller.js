@@ -1,11 +1,10 @@
 import Coupon from "../models/coupon.model.js";
 import { stripe } from "../lib/stripe.js";
 import Order from "../models/order.model.js";
-import { disconnect } from "mongoose";
 
 export const createCheckoutSession = async (req, res) => {
   try {
-    const { products, coupon } = req.body;
+    const { products, couponCode } = req.body;
     if (!Array.isArray(products) || products.length === 0) {
       return res.status(400).json({ error: "Invalid or empty products array" });
     }
@@ -27,7 +26,7 @@ export const createCheckoutSession = async (req, res) => {
         },
       };
     });
-    coupon = null;
+    let coupon = null;
     if (couponCode) {
       coupon = await Coupon.findOne({
         code: couponCode,
