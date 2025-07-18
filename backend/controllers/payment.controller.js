@@ -24,6 +24,7 @@ export const createCheckoutSession = async (req, res) => {
           },
           unit_amount: amount,
         },
+        quantity: product.quantity || 1,
       };
     });
     let coupon = null;
@@ -39,12 +40,12 @@ export const createCheckoutSession = async (req, res) => {
         );
       }
     }
-    const session = await stripe.checkout.session.create({
+    const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: lineItems,
       mode: "payment",
-      success_url: `${process.env.CLIENT_URL}/success?session_id={CHECK_OUT_SESSION_ID}`,
-      cancel_url: `${process.env.CLIENT_URL}/purchase.cancel`,
+      success_url: `${process.env.CLIENT_URL}/purchase-success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.CLIENT_URL}/purchase-cancel`,
       discounts: coupon
         ? [
             {
@@ -96,7 +97,7 @@ export const checkoutSuccess = async (req, res) => {
       const newOrder = new Order({
         user: session.metadata.userId,
         products: products.map((product) => ({
-          product: product._id,
+          product: product.id,
           quantity: product.quantity,
           price: product.price,
         })),
